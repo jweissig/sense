@@ -36,3 +36,9 @@ You'll need to have both the AMG8833 and TSL2591 sensors connected to the I2C bu
 You can connect to a web server on localhost:8787 that will show you the Lux and Thermal sensor data in a gnuplot window. This is pretty useful for hacking around. Data will also be logged to the console which you can pipe/redirect into a logging file.
 
     go run sense.go
+
+## Example
+
+Here's a snap from the web interface.
+
+[[https://github.com/jweissig/sense/blob/master/html/demo.png|alt=demo]]
