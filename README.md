@@ -1,4 +1,4 @@
-Prototype data logger using a Raspberry Pi Zero W, AMG8833 8x8 Thermal Camera Sensor, and a TSL2591 High Dynamic Range Digital Light Sensor. The idea is to put one of these in a room and detect visible and non-visible light. This problem will allow you to connect to a web server on the Raspberry Pi and view the current status. But, the program will also log event each minute in JSON format to the console for later analysis.
+Prototype data logger using a Raspberry Pi Zero W, [Adafruit AMG8833 IR Thermal Camera Breakout](https://www.adafruit.com/product/3538), and an [Adafruit TSL2591 High Dynamic Range Digital Light Sensor](https://www.adafruit.com/product/1980). The idea is to put one of these in a room and detect visible and non-visible light. This problem will allow you to connect to a web server on the Raspberry Pi and view the current status. But, the program will also log event each minute in JSON format to the console for later analysis.
 
 ## Setting up
 
@@ -41,4 +41,4 @@ You can connect to a web server on localhost:8787 that will show you the Lux and
 
 Here's a snap from the web interface.
 
-[[https://github.com/jweissig/sense/blob/master/html/demo.png|alt=demo]]
+![demo](https://raw.githubusercontent.com/jweissig/sense/master/html/demo.png)
