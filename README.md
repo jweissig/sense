@@ -1,4 +1,4 @@
-Prototype data logger using a Raspberry Pi Zero W, [Adafruit AMG8833 IR Thermal Camera Breakout](https://www.adafruit.com/product/3538), and an [Adafruit TSL2591 High Dynamic Range Digital Light Sensor](https://www.adafruit.com/product/1980). The idea is to put one of these in a room and detect visible and non-visible light. This problem will allow you to connect to a web server on the Raspberry Pi and view the current status. But, the program will also log event each minute in JSON format to the console for later analysis.
+Prototype data logger using a [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/), [Adafruit AMG8833 IR Thermal Camera Breakout](https://www.adafruit.com/product/3538), and an [Adafruit TSL2591 High Dynamic Range Digital Light Sensor](https://www.adafruit.com/product/1980). The idea is to put one of these in a room and detect visible and non-visible light. This problem will allow you to connect to a web server on the Raspberry Pi and view the current status. But, the program will also log event each minute in JSON format to the console for later analysis.
 
 ## Setting up
 
@@ -30,6 +30,7 @@ You'll need to have both the AMG8833 and TSL2591 sensors connected to the I2C bu
 
     go get -u github.com/jweissig/amg8833
     go get -u github.com/mstahl/tsl2591
+    git clone https://github.com/jweissig/sense.git
 
 ## Usage
 
@@ -38,6 +39,22 @@ You can connect to a web server on localhost:8787 that will show you the Lux and
     go run sense.go
 
 ## Example
+
+Here's an example of the JSON.
+
+    {
+       "Timestamp":"2019-01-02T22:25:49.730118711-08:00",
+       "Pixels":[
+          21.25,
+          23.25,
+          22.25,
+          ...
+          19.75,
+          20.5,
+          20.75
+       ],
+       "Lux":34.163544303797465
+    }
 
 Here's a snap from the web interface.
 
