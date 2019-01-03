@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sensor</title>
+    </head>
+    <body>
+
+<h3>Sensor</h3>
+
+<p>Timestamp: {{.Timestamp}}</p>
+<p>Lux: {{.Lux}}</p>
+
+<button onclick="localStorage.removeItem('gnuplot.script');
+localStorage.removeItem('gnuplot.files');
+window.location.reload(true)">Reload</button>
+
+<br>
+
+<img src="" id="gnuimg" type="image/svg+xml" width=600 height=600 class="float-right"/>
+
+<br>
+
+<textarea class="emscripten" id="gnuplot" rows="15" cols="60" onkeyup="scriptChange()">
+set terminal svg size 600,600 enhanced fname 'arial'  fsize 10 butt solid
+set output 'out.svg'
+#set yrange [*:*] reverse
+set pm3d map interpolate 3, 3
+splot '-' matrix
+{{.Pixels}}
+</textarea>
+
+<textarea class="emscripten" id="output" rows="8" style="display:none;">Loading, please wait. </textarea>
+        <script src='/static/gnuplot_api.js'></script>
+        <script>
+                gnuplot = new Gnuplot('/static/gnuplot.js');
+                gnuplot.onOutput = function(text) {
+                    document.getElementById('output').value += text + '\n';
+                    document.getElementById('output').scrollTop = 99999;
+                };
+                gnuplot.onError = function(text) {
+                    document.getElementById('output').value += 'ERR: ' + text + '\n';
+                    document.getElementById('output').scrollTop = 99999;
+                };
+                var lastTAContent = '';
+                function scriptChange() {
+                    var val = document.getElementById("gnuplot").value;
+                    if (lastTAContent == val)
+                        return;
+                    //localStorage["gnuplot.script"] = val;
+                    if (gnuplot.isRunning) {
+                        setTimeout(scriptChange, 1000);
+                    } else {
+                        lastTAContent = val;
+                        runScript();
+                    }
+                }
+                ;
+                files = {};
+
+                if (localStorage["gnuplot.files"])
+                    files = JSON.parse(localStorage["gnuplot.files"]);
+                for (var key in files)
+                    gnuplot.onOutput("Found locally stored file: " + key + " with " + files[key].length + " bytes.");
+                var runScript = function() {
+                    var editor = document.getElementById('gnuplot');   // textarea
+                    var start = Date.now();
+                    // "upload" files to worker thread
+                    for (var f in files)
+                        gnuplot.putFile(f, files[f]);
+
+                    gnuplot.run(editor.value, function(e) {
+                        gnuplot.onOutput('Execution took ' + (Date.now() - start) / 1000 + 's.');
+                        gnuplot.getFile('out.svg', function(e) {
+                            if (!e.content) {
+                                gnuplot.onError("Output file out.svg not found!");
+                                return;
+                            }
+                            var img = document.getElementById('gnuimg');
+                            try {
+                                var ab = new Uint8Array(e.content);
+                                var blob = new Blob([ab], {"type": "image\/svg+xml"});
+                                window.URL = window.URL || window.webkitURL;
+                                img.src = window.URL.createObjectURL(blob);
+                            } catch (err) { // in case blob / URL missing, fallback to data-uri
+                                if (!window.blobalert) {
+                                    alert('Warning - your browser does not support Blob-URLs, using data-uri with a lot more memory and time required. Err: ' + err);
+                                    window.blobalert = true;
+                                }
+                                var rstr = '';
+                                for (var i = 0; i < e.content.length; i++)
+                                    rstr += String.fromCharCode(e.content[i]);
+                                img.src = 'data:image\/svg+xml;base64,' + btoa(rstr);
+                            }
+                        });
+                    });
+                };
+                // set the script from local storage
+                if (localStorage["gnuplot.script"])
+                    document.getElementById('gnuplot').value = localStorage["gnuplot.script"];
+                scriptChange();
+                function handleFileSelect(evt) {
+                    var _files = evt.target.files; // FileList object
+
+                    // files is a FileList of File objects. List some properties.
+                    var output = [];
+                    for (var i = 0, f; f = _files[i]; i++) {
+                        output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                                f.size, ' bytes, last modified: ',
+                                f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                                '</li>');
+                        (function() {
+                            var reader = new FileReader();
+                            var fname = f.name;
+                            reader.onloadend = function(e) {
+                                if (e.target.result) {
+                                    gnuplot.onOutput(fname + ": Read success - storing in browser. " + e.target.result.length);
+                                    files[fname] = e.target.result;
+                                    localStorage["gnuplot.files"] = JSON.stringify(files);
+                                }
+
+                            };
+                            reader.readAsText(f);
+                        })();
+                    }
+                    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+                }
+                //document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+        </script>
+
+    </body>
+</html>
