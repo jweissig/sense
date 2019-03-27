@@ -1,4 +1,8 @@
-This is the software for a data logger using a [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/), [Adafruit AMG8833 IR Thermal Camera Breakout](https://www.adafruit.com/product/3538), and an [Adafruit TSL2591 High Dynamic Range Digital Light Sensor](https://www.adafruit.com/product/1980). The idea is to put several of these in rooms to detect visible and non-visible light. The goal is to track my work and sleeping habits based on presence in a particular room. This program will allow you to connect to a web server on the Raspberry Pi and view the current sensor states. But, the program will also log events each minute in JSON format to the console for later analysis.
+# Habit Tracking With Light and Thermal Sensors
+
+[#64 - Habit Tracking With Light and Thermal Sensors (screencast)](https://sysadmincasts.com/episodes/64-habit-tracking-with-light-and-thermal-sensors)
+
+This is the software for a data logger using a [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/), [Adafruit AMG8833 IR Thermal Camera Breakout](https://www.adafruit.com/product/3538), and an [Adafruit TSL2591 High Dynamic Range Digital Light Sensor](https://www.adafruit.com/product/1980). The idea is to put several of these in a room to detect visible and non-visible light. The goal is to track my work and sleeping habits based on presence in a particular room. This program will allow you to connect to a web server on the Raspberry Pi and view the current sensor states. But, the program will also log events each minute in JSON format to the console for later analysis (or redirect the output to a log file).
 
 ![sensor](https://raw.githubusercontent.com/jweissig/sense/master/html/sensor.png)
 
